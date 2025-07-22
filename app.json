@@ -1,21 +1,25 @@
 {
   "expo": {
-    "name": "Medtech",
-    "slug": "Medtech",
+    "name": "Netra",
+    "slug": "netra",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "medtech",
+    "scheme": "netra",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan and analyze your eyes for health assessment."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["CAMERA"],
       "edgeToEdgeEnabled": true
     },
     "web": {
