@@ -1,568 +1,220 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
-
-interface QuickActionProps {
-  icon: any;
-  title: string;
-  description: string;
-  onPress: () => void;
-  color: string;
-}
-
-const QuickAction: React.FC<QuickActionProps> = ({ icon, title, description, onPress, color }) => {
-  const scaleAnim = React.useRef(new Animated.Value(1)).current;
-
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.98,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  return (
-    <Animated.View style={[styles.actionCard, { transform: [{ scale: scaleAnim }], borderColor: `${color}40` }]}>
-      <TouchableOpacity
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        onPress={onPress}
-        activeOpacity={1}
-      >
-        <LinearGradient
-          colors={[`${color}15`, `${color}05`]}
-          style={styles.actionGradient}
-        >
-          <View style={[styles.iconContainer, { backgroundColor: `${color}25` }]}>
-            <ThemedText style={[styles.iconText, { color }]}>{icon}</ThemedText>
-          </View>
-          <View style={styles.actionTextContainer}>
-            <ThemedText style={styles.actionTitle}>{title}</ThemedText>
-            <ThemedText style={styles.actionDescription}>{description}</ThemedText>
-          </View>
-          <View style={styles.actionArrow}>
-            <ThemedText style={[styles.arrowText, { color }]}>→</ThemedText>
-          </View>
-        </LinearGradient>
-      </TouchableOpacity>
-    </Animated.View>
-  );
-};
+import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-  const titleScaleAnim = React.useRef(new Animated.Value(0.95)).current;
 
-  React.useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.spring(titleScaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [fadeAnim, titleScaleAnim]);
-
-  const quickActions = [
-    {
-      icon: '📱',
-      title: 'Eye Scan',
-      description: 'Start a new eye health assessment',
-      onPress: () => router.push('/(tabs)/scan'),
-      color: '#00bcd4'
-    },
-    {
-      icon: '📊',
-      title: 'Dashboard',
-      description: 'View your health analytics',
-      onPress: () => router.push('/(tabs)/dashboard'),
-      color: '#4CAF50'
-    },
-    {
-      icon: '📋',
-      title: 'History',
-      description: 'Review past scan results',
-      onPress: () => router.push('/(tabs)/explore'),
-      color: '#FF9800'
+  const handleLogout = async () => {
+    try {
+      // Go back to login screen
+      router.replace('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
     }
-  ];
+  };
 
   return (
-    <Animated.ScrollView
-      style={[styles.container, { opacity: fadeAnim }]}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 40 }}
-    >
-      <ThemedView style={styles.header}>
-        <Animated.View style={{ transform: [{ scale: titleScaleAnim }] }}>
-          <ThemedText type="title" style={styles.welcomeTitle}>Welcome to Netra</ThemedText>
-        </Animated.View>
-        <ThemedText style={styles.welcomeSubtitle}>Your personal eye health companion</ThemedText>
-      </ThemedView>
-
-      <ThemedView style={styles.heroSection}>
-        <LinearGradient
-          colors={['#00bcd440', '#00bcd420', '#00bcd405']}
-          style={styles.heroGradient}
-        >
-          <View style={styles.heroIconContainer}>
-            <View style={styles.heroIconBackground}>
-              <ThemedText style={styles.heroMainIcon}>👁️</ThemedText>
-            </View>
-            <View style={styles.heroIconAccent}>
-              <ThemedText style={styles.heroAccentIcon}>✨</ThemedText>
-            </View>
-          </View>
-          <Animated.View style={{ transform: [{ scale: titleScaleAnim }] }}>
-            <ThemedText style={styles.heroTitle}>Advanced Eye Health Monitoring</ThemedText>
-          </Animated.View>
-          <ThemedText style={styles.heroDescription}>
-            Use cutting-edge camera technology to assess your eye health from the comfort of your home.
-            Get instant feedback and track your progress over time.
-          </ThemedText>
-          <View style={styles.heroStats}>
-            <View style={styles.heroStat}>
-              <ThemedText style={styles.heroStatIcon}>✅</ThemedText>
-              <ThemedText style={styles.heroStatText}>AI-Powered</ThemedText>
-            </View>
-            <View style={styles.heroStat}>
-              <ThemedText style={styles.heroStatIcon}>🛡️</ThemedText>
-              <ThemedText style={styles.heroStatText}>Secure</ThemedText>
-            </View>
-            <View style={styles.heroStat}>
-              <ThemedText style={styles.heroStatIcon}>⚡</ThemedText>
-              <ThemedText style={styles.heroStatText}>Real-time</ThemedText>
-            </View>
-          </View>
-        </LinearGradient>
-      </ThemedView>
-
-      <ThemedView style={styles.actionsSection}>
-        <Animated.View style={{ transform: [{ scale: titleScaleAnim }] }}>
-          <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
-        </Animated.View>
-        <View style={styles.actionsGrid}>
-          {quickActions.map((action, index) => (
-            <QuickAction key={index} {...action} />
-          ))}
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <View style={styles.header}>
+        <View>
+          <ThemedText type="title" style={styles.title}>Netra</ThemedText>
+          <ThemedText style={styles.subtitle}>Eye Health Scanner</ThemedText>
         </View>
-      </ThemedView>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={24} color="#EF4444" />
+        </TouchableOpacity>
+      </View>
 
-      <ThemedView style={styles.featuresSection}>
-        <Animated.View style={{ transform: [{ scale: titleScaleAnim }] }}>
-          <ThemedText style={styles.sectionTitle}>Why Choose Netra?</ThemedText>
-        </Animated.View>
-        <View style={styles.featuresGrid}>
-          <View style={styles.featureCard}>
-            <View style={[styles.featureIcon, { backgroundColor: 'rgba(255, 105, 180, 0.25)' }]}>
-              <View style={styles.brainIcon}>
-                <View style={styles.brainShape}></View>
-              </View>
-            </View>
-            <ThemedText style={styles.featureTitle}>AI Analysis</ThemedText>
-            <ThemedText style={styles.featureDescription}>
-              Advanced machine learning algorithms analyze your eye health patterns
-            </ThemedText>
-          </View>
-          
-          <View style={styles.featureCard}>
-            <View style={[styles.featureIcon, { backgroundColor: 'rgba(255, 152, 0, 0.25)' }]}>
-              <View style={styles.bellIcon}>
-                <View style={styles.bellBody}></View>
-                <View style={styles.bellDot}></View>
-              </View>
-            </View>
-            <ThemedText style={styles.featureTitle}>Smart Alerts</ThemedText>
-            <ThemedText style={styles.featureDescription}>
-              Get notified about important changes or recommended actions
-            </ThemedText>
-          </View>
-        </View>
-      </ThemedView>
-
-      <ThemedView style={styles.infoSection}>
-        <Animated.View style={{ transform: [{ scale: titleScaleAnim }] }}>
-          <ThemedText style={styles.sectionTitle}>Health Tips</ThemedText>
-        </Animated.View>
-        <View style={styles.tipCard}>
-          <ThemedText style={styles.tipIcon}>💡</ThemedText>
-          <View style={styles.tipContent}>
-            <ThemedText style={styles.tipTitle}>Daily Eye Care</ThemedText>
-            <ThemedText style={styles.tipText}>
-              Take regular breaks from screen time using the 20-20-20 rule: Every 20 minutes, look at something 20 feet away for 20 seconds.
-            </ThemedText>
-          </View>
-        </View>
-      </ThemedView>
-
-      <ThemedView style={styles.disclaimerSection}>
-        <ThemedText style={styles.warningIcon}>⚠️</ThemedText>
-        <ThemedText style={styles.disclaimerText}>
-          This app is for educational purposes only. Always consult healthcare professionals for medical concerns.
+      <ThemedView style={styles.welcomeCard}>
+        <ThemedText style={styles.welcomeText}>Welcome back, User</ThemedText>
+        <ThemedText style={styles.welcomeSubtext}>
+          Ready to scan your eyes?
         </ThemedText>
       </ThemedView>
-    </Animated.ScrollView>
+
+      <View style={styles.actionSection}>
+        <TouchableOpacity 
+          style={styles.scanButton}
+          onPress={() => router.push('/scan')}
+        >
+          <View style={styles.scanIcon}>
+            <ThemedText style={styles.scanIconText}>👁️</ThemedText>
+          </View>
+          <View style={styles.scanTextContainer}>
+            <ThemedText style={styles.scanTitle}>Start Eye Scan</ThemedText>
+            <ThemedText style={styles.scanDescription}>AI-powered eye health assessment</ThemedText>
+          </View>
+          <Ionicons name="chevron-forward" size={24} color="#2563EB" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.exploreButton}
+          onPress={() => router.push('/(tabs)/explore')}
+        >
+          <View style={styles.exploreIcon}>
+            <ThemedText style={styles.exploreIconText}>📊</ThemedText>
+          </View>
+          <View style={styles.exploreTextContainer}>
+            <ThemedText style={styles.exploreTitle}>View History</ThemedText>
+            <ThemedText style={styles.exploreDescription}>Check your previous scans</ThemedText>
+          </View>
+          <Ionicons name="chevron-forward" size={24} color="#10B981" />
+        </TouchableOpacity>
+      </View>
+
+      <ThemedView style={styles.infoCard}>
+        <ThemedText style={styles.infoTitle}>About Eye Scanning</ThemedText>
+        <ThemedText style={styles.infoText}>
+          Our AI-powered eye scanner helps detect potential eye health issues early. 
+          Regular scanning can help maintain healthy vision.
+        </ThemedText>
+      </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#0F0F23',
+  },
+  contentContainer: {
+    paddingBottom: 40,
   },
   header: {
-    padding: 24,
-    paddingTop: 64,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  welcomeTitle: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: '#00d4ff',
-    marginBottom: 12,
-    textAlign: 'center',
-    letterSpacing: 1,
-    fontFamily: 'System', // Use system font for consistency, can be replaced with a custom font
-    textShadowColor: 'rgba(0, 212, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
-  },
-  welcomeSubtitle: {
-    fontSize: 16,
-    color: '#b0b0b0',
-    textAlign: 'center',
-    fontWeight: '400',
-    fontFamily: 'System',
-  },
-  heroSection: {
-    marginHorizontal: 16,
-    marginVertical: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  heroGradient: {
-    padding: 28,
-    alignItems: 'center',
-    borderRadius: 24,
-  },
-  heroIconContainer: {
-    position: 'relative',
-    marginBottom: 24,
-  },
-  heroIconBackground: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: 'rgba(0, 188, 212, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(0, 188, 212, 0.5)',
-  },
-  heroIconAccent: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: 'rgba(255, 215, 0, 0.3)',
-    borderRadius: 16,
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.5)',
-  },
-  heroTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#ffffff',
-    textAlign: 'center',
-    marginBottom: 16,
-    letterSpacing: 0.8,
-    fontFamily: 'System',
-    textShadowColor: 'rgba(255, 255, 255, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  heroDescription: {
-    fontSize: 15,
-    color: '#b0b0b0',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-    paddingHorizontal: 12,
-    fontFamily: 'System',
-  },
-  heroStats: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    padding: 12,
-    borderRadius: 12,
-  },
-  heroStat: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  heroStatText: {
-    fontSize: 13,
-    color: '#b0b0b0',
-    marginTop: 6,
-    fontWeight: '600',
-    fontFamily: 'System',
-  },
-  actionsSection: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#ffffff',
-    marginBottom: 20,
-    paddingLeft: 4,
-    letterSpacing: 0.8,
-    fontFamily: 'System',
-    textShadowColor: 'rgba(255, 255, 255, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  actionsGrid: {
-    gap: 16,
-  },
-  actionCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    overflow: 'hidden',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-  },
-  actionGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 18,
-    borderRadius: 20,
-  },
-  iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  actionTextContainer: {
-    flex: 1,
-  },
-  actionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 6,
-    fontFamily: 'System',
-  },
-  actionDescription: {
-    fontSize: 13,
-    color: '#b0b0b0',
-    lineHeight: 18,
-    fontFamily: 'System',
-  },
-  actionArrow: {
-    marginLeft: 12,
-    opacity: 0.7,
-  },
-  iconText: {
-    fontSize: 30,
-    textAlign: 'center',
-  },
-  arrowText: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  heroMainIcon: {
-    fontSize: 56,
-    textAlign: 'center',
-  },
-  heroAccentIcon: {
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  heroStatIcon: {
-    fontSize: 18,
-    marginBottom: 6,
-  },
-  featuresSection: {
-    padding: 20,
-  },
-  featuresGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
     justifyContent: 'space-between',
-  },
-  featureCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 20,
-    padding: 20,
-    flex: 0.48,
     alignItems: 'center',
-    minHeight: 160,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
   },
-  featureIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 2,
+  },
+  logoutButton: {
+    padding: 8,
+    backgroundColor: '#1A1A2E',
+    borderRadius: 8,
+  },
+  welcomeCard: {
+    margin: 20,
+    padding: 24,
+    backgroundColor: '#1A1A2E',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  welcomeText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  welcomeSubtext: {
+    fontSize: 16,
+    color: '#9CA3AF',
+  },
+  actionSection: {
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  scanButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1A1A2E',
+    padding: 20,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2563EB',
+  },
+  scanIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#2563EB15',
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  featureTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 8,
-    textAlign: 'center',
-    fontFamily: 'System',
-  },
-  featureDescription: {
-    fontSize: 13,
-    color: '#b0b0b0',
-    textAlign: 'center',
-    lineHeight: 18,
-    fontFamily: 'System',
-  },
-  infoSection: {
-    padding: 20,
-  },
-  tipIcon: {
-    fontSize: 26,
     marginRight: 16,
   },
-  tipCard: {
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    borderRadius: 16,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.4)',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+  scanIconText: {
+    fontSize: 24,
   },
-  tipContent: {
+  scanTextContainer: {
     flex: 1,
   },
-  tipTitle: {
-    fontSize: 17,
+  scanTitle: {
+    fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 6,
-    fontFamily: 'System',
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
-  tipText: {
-    fontSize: 13,
-    color: '#b0b0b0',
-    lineHeight: 20,
-    fontFamily: 'System',
+  scanDescription: {
+    fontSize: 14,
+    color: '#9CA3AF',
   },
-  disclaimerSection: {
+  exploreButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 107, 107, 0.15)',
+    backgroundColor: '#1A1A2E',
+    padding: 20,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#10B981',
+  },
+  exploreIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#10B98115',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  exploreIconText: {
+    fontSize: 24,
+  },
+  exploreTextContainer: {
+    flex: 1,
+  },
+  exploreTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  exploreDescription: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  infoCard: {
     margin: 20,
     padding: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 107, 107, 0.4)',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-  },
-  disclaimerText: {
-    fontSize: 13,
-    color: '#b0b0b0',
-    marginLeft: 12,
-    flex: 1,
-    lineHeight: 18,
-    fontFamily: 'System',
-  },
-  warningIcon: {
-    fontSize: 22,
-  },
-  brainIcon: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brainShape: {
-    width: 28,
-    height: 24,
-    backgroundColor: '#FF69B4',
-    borderRadius: 14,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  bellIcon: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bellBody: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#FF9800',
+    backgroundColor: '#16213E',
     borderRadius: 12,
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
+    borderWidth: 1,
+    borderColor: '#374151',
   },
-  bellDot: {
-    width: 8,
-    height: 8,
-    backgroundColor: '#FF5722',
-    borderRadius: 4,
-    position: 'absolute',
-    top: -3,
-    right: -3,
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 12,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#D1D5DB',
+    lineHeight: 20,
   },
 });

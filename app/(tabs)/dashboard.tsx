@@ -1,7 +1,9 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useAuth } from '@/contexts/AuthContext.simple';
+import { router } from 'expo-router';
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface StatCardProps {
     title: string;
@@ -53,6 +55,30 @@ const MetricBar: React.FC<MetricBarProps> = ({ label, value, maxValue, color }) 
 };
 
 export default function DashboardScreen() {
+    const { logout } = useAuth();
+
+    const handleLogout = async () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure you want to logout?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Logout',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await logout();
+                            router.replace('/');
+                        } catch {
+                            Alert.alert('Error', 'Failed to logout');
+                        }
+                    }
+                }
+            ]
+        );
+    };
+
     const stats = [
         {
             title: 'Total Scans',
@@ -95,8 +121,15 @@ export default function DashboardScreen() {
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             {/* Header */}
             <ThemedView style={styles.header}>
-                <ThemedText style={styles.title}>Dashboard</ThemedText>
-                <ThemedText style={styles.subtitle}>Your eye health overview</ThemedText>
+                <View style={styles.headerContent}>
+                    <View>
+                        <ThemedText style={styles.title}>Dashboard</ThemedText>
+                        <ThemedText style={styles.subtitle}>Your eye health overview</ThemedText>
+                    </View>
+                    <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                        <ThemedText style={styles.logoutButtonText}>Logout</ThemedText>
+                    </TouchableOpacity>
+                </View>
             </ThemedView>
 
             {/* Stats Grid */}
@@ -146,6 +179,23 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingTop: 60,
         alignItems: 'center',
+    },
+    headerContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+    },
+    logoutButton: {
+        backgroundColor: '#F44336',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 8,
+    },
+    logoutButtonText: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: '600',
     },
     title: {
         fontSize: 28,
