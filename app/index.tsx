@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAuth } from '../contexts/AuthContext.simple';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LandingScreen() {
   const { user, loading } = useAuth();

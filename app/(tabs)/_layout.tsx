@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/ThemedText';
-import { useAuth } from '@/contexts/AuthContext.simple';
+import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Platform, Text, View } from 'react-native';
@@ -13,7 +13,18 @@ const TabIcon = ({ icon, color }: { icon: string; color: string }) => (
 );
 
 export default function TabLayout() {
-  const { user, loading } = useAuth();
+  // Use a try-catch to handle cases where AuthProvider isn't ready yet
+  let user = null;
+  let loading = true;
+  
+  try {
+    const authData = useAuth();
+    user = authData.user;
+    loading = authData.loading;
+  } catch {
+    console.log('AuthProvider not ready yet, defaulting to loading state');
+    // Keep default values: user = null, loading = true
+  }
 
   useEffect(() => {
     // Only redirect if we're sure the user is not authenticated

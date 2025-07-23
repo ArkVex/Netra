@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useAuth } from '@/contexts/AuthContext.simple';
+import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';

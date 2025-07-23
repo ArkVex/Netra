@@ -2,36 +2,54 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+
+interface Category {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  color: string;
+  route: string;
+}
 
 export default function ExploreScreen() {
-  const categories = [
+  const handleCategoryPress = (route: string) => {
+    router.push(route as any);
+  };
+
+  const categories: Category[] = [
     {
       id: 'articles',
       title: 'Health Articles',
-      subtitle: 'Latest eye care insights',
+      subtitle: 'Evidence-based eye health information',
       icon: '📚',
       color: '#3B82F6',
+      route: '/health-articles'
     },
     {
       id: 'tips',
       title: 'Eye Care Tips',
-      subtitle: 'Daily care recommendations',
+      subtitle: 'Daily habits for healthy vision',
       icon: '💡',
       color: '#10B981',
+      route: '/eye-care-tips'
     },
     {
       id: 'exercises',
       title: 'Eye Exercises',
-      subtitle: 'Strengthen your vision',
+      subtitle: 'Simple exercises to maintain eye health',
       icon: '👀',
       color: '#F59E0B',
+      route: '/eye-exercises'
     },
     {
       id: 'nutrition',
       title: 'Eye Nutrition',
-      subtitle: 'Foods for healthy eyes',
+      subtitle: 'Foods that support eye health',
       icon: '🥕',
       color: '#EF4444',
+      route: '/eye-nutrition'
     },
   ];
 
@@ -51,6 +69,7 @@ export default function ExploreScreen() {
               key={category.id}
               style={[styles.categoryCard, { borderColor: `${category.color}40` }]}
               activeOpacity={0.8}
+              onPress={() => handleCategoryPress(category.route)}
             >
               <View style={[styles.categoryIcon, { backgroundColor: `${category.color}20` }]}>
                 <ThemedText style={styles.categoryIconText}>{category.icon}</ThemedText>

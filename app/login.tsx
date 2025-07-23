@@ -13,15 +13,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useAuth } from '../contexts/AuthContext.simple';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -38,22 +37,6 @@ export default function LoginScreen() {
       Alert.alert('Login Failed', error.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    console.log('Google login button pressed'); // Debug log
-    setIsGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-      console.log('Google login successful'); // Debug log
-      // Navigate to index page, which will then redirect to tabs
-      router.replace('/');
-    } catch (error: any) {
-      console.log('Google login error:', error); // Debug log
-      Alert.alert('Google Sign-In Failed', error.message || 'Something went wrong');
-    } finally {
-      setIsGoogleLoading(false);
     }
   };
 
@@ -121,30 +104,6 @@ export default function LoginScreen() {
               <ActivityIndicator color="white" />
             ) : (
               <Text style={styles.loginButtonText}>Sign In</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Google Sign-In Button */}
-          <TouchableOpacity
-            style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
-            onPress={handleGoogleLogin}
-            disabled={isGoogleLoading || isLoading}
-            activeOpacity={0.8}
-          >
-            {isGoogleLoading ? (
-              <ActivityIndicator color="#374151" />
-            ) : (
-              <>
-                <Text style={styles.googleIcon}>🔍</Text>
-                <Text style={styles.googleButtonText}>Continue with Google</Text>
-              </>
             )}
           </TouchableOpacity>
 

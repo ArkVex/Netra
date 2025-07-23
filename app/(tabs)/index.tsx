@@ -4,12 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
+      await logout();
       // Go back to login screen
       router.replace('/login');
     } catch (error) {
@@ -17,12 +20,23 @@ export default function HomeScreen() {
     }
   };
 
+  // Get user's display name or email
+  const getUserName = () => {
+    if (user?.displayName) {
+      return user.displayName;
+    } else if (user?.email) {
+      // Extract name from email (before @ symbol)
+      return user.email.split('@')[0];
+    }
+    return 'User';
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
         <View>
-          <ThemedText type="title" style={styles.title}>Netra</ThemedText>
-          <ThemedText style={styles.subtitle}>Eye Health Scanner</ThemedText>
+          <ThemedText type="title" style={[styles.title, { fontSize: 46, fontWeight: 'bold' }]}>Netra</ThemedText>
+          <ThemedText style={[styles.subtitle, { fontSize: 18, fontWeight: 'bold' }]}>Eye Health Scanner</ThemedText>
         </View>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="#EF4444" />
@@ -30,10 +44,13 @@ export default function HomeScreen() {
       </View>
 
       <ThemedView style={styles.welcomeCard}>
-        <ThemedText style={styles.welcomeText}>Welcome back, User</ThemedText>
+        <ThemedText style={styles.welcomeText}>Welcome back, {getUserName()}</ThemedText>
         <ThemedText style={styles.welcomeSubtext}>
           Ready to scan your eyes?
         </ThemedText>
+        {user?.email && (
+          <ThemedText style={styles.userEmail}>{user.email}</ThemedText>
+        )}
       </ThemedView>
 
       <View style={styles.actionSection}>
@@ -125,6 +142,12 @@ const styles = StyleSheet.create({
   welcomeSubtext: {
     fontSize: 16,
     color: '#9CA3AF',
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
   actionSection: {
     paddingHorizontal: 20,

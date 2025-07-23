@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useAuth } from '../contexts/AuthContext.simple';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function SignupScreen() {
   const [name, setName] = useState('');
@@ -23,8 +23,7 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp } = useAuth();
 
   const handleSignup = async () => {
     console.log('Signup button pressed'); // Debug log
@@ -56,22 +55,6 @@ export default function SignupScreen() {
       Alert.alert('Signup Failed', error.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleSignup = async () => {
-    console.log('Google signup button pressed'); // Debug log
-    setIsGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-      console.log('Google signup successful'); // Debug log
-      // Navigate to index page, which will then redirect to tabs
-      router.replace('/');
-    } catch (error: any) {
-      console.log('Google signup error:', error); // Debug log
-      Alert.alert('Google Sign-Up Failed', error.message || 'Something went wrong');
-    } finally {
-      setIsGoogleLoading(false);
     }
   };
 
@@ -176,30 +159,6 @@ export default function SignupScreen() {
               <ActivityIndicator color="white" />
             ) : (
               <Text style={styles.signupButtonText}>Create Account</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Google Sign-Up Button */}
-          <TouchableOpacity
-            style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
-            onPress={handleGoogleSignup}
-            disabled={isGoogleLoading || isLoading}
-            activeOpacity={0.8}
-          >
-            {isGoogleLoading ? (
-              <ActivityIndicator color="#374151" />
-            ) : (
-              <>
-                <Text style={styles.googleIcon}>🔍</Text>
-                <Text style={styles.googleButtonText}>Continue with Google</Text>
-              </>
             )}
           </TouchableOpacity>
 

@@ -4,16 +4,25 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithCredential
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../lib/firebase';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
+import { GOOGLE_AUTH_CONFIG, getGoogleClientId, isGoogleAuthDevelopmentMode } from '../config/googleAuth';
+
+// Configure WebBrowser for authentication
+WebBrowser.maybeCompleteAuthSession();
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -82,6 +91,56 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      if (isGoogleAuthDevelopmentMode()) {
+        // Development mode - simulate Google sign-in with Firebase anonymous user
+        console.log('Running in development mode - simulating Google OAuth with Firebase');
+        
+        // For development, create a temporary user with mock Google data
+        // In a real implementation, you'd use Firebase's Google sign-in
+        throw new Error('Google sign-in in development mode. Set up Firebase Google authentication for production.');
+      } else {
+        // Production mode - implement real Firebase Google authentication
+        console.log('Running in production mode - using real Firebase Google OAuth');
+        
+        const redirectUri = AuthSession.makeRedirectUri({
+          scheme: 'netra',
+          path: 'oauth'
+        });
+        
+        const request = new AuthSession.AuthRequest({
+          clientId: getGoogleClientId(),
+          scopes: GOOGLE_AUTH_CONFIG.production.scopes,
+          redirectUri: redirectUri,
+          responseType: AuthSession.ResponseType.Code,
+          extraParams: GOOGLE_AUTH_CONFIG.production.additionalParameters,
+        });
+
+        const result = await request.promptAsync({
+          authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+        });
+
+        if (result.type === 'success') {
+          // In a real implementation, you would:
+          // 1. Exchange the code for a Google access token
+          // 2. Use that token to create a Firebase credential
+          // 3. Sign in with that credential
+          
+          // const credential = GoogleAuthProvider.credential(googleIdToken);
+          // await signInWithCredential(auth, credential);
+          
+          throw new Error('Google sign-in requires backend token exchange. See GOOGLE_AUTH_SETUP.md for implementation.');
+        } else {
+          throw new Error('Google sign-in was cancelled or failed');
+        }
+      }
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await signOut(auth);
@@ -95,6 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     signIn,
     signUp,
+    signInWithGoogle,
     logout
   };
 
