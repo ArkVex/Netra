@@ -1,10 +1,10 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '../../components/ThemedText';
+import { ThemedView } from '../../components/ThemedView';
+import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
-import { useAuth } from '@/contexts/AuthContext';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function HomeScreen() {
       <View style={styles.actionSection}>
         <TouchableOpacity 
           style={styles.scanButton}
-          onPress={() => router.push('/scan')}
+          onPress={() => router.push('/scan_gemini')}
         >
           <View style={styles.scanIcon}>
             <ThemedText style={styles.scanIconText}>👁️</ThemedText>

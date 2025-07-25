@@ -1,11 +1,11 @@
-import { ThemedText } from '@/components/ThemedText';
-import { useAuth } from '@/contexts/AuthContext';
+import { ThemedText } from '../../components/ThemedText';
+import { useAuth } from '../../contexts/AuthContext';
 import { Tabs, router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Platform, Text, View } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { HapticTab } from '../../components/HapticTab';
+import TabBarBackground from '../../components/ui/TabBarBackground';
 
 // Simple icon component using emojis
 const TabIcon = ({ icon, color }: { icon: string; color: string }) => (

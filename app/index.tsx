@@ -15,6 +15,16 @@ export default function LandingScreen() {
       console.log('Index.tsx - Navigating to tabs'); // Debug log
       router.replace('/(tabs)');
     }
+    
+    // Auto-skip after 5 seconds if still loading (development fallback)
+    const autoSkipTimer = setTimeout(() => {
+      if (loading) {
+        console.log('Auto-skipping authentication due to timeout');
+        handleSkipAuth();
+      }
+    }, 5000);
+    
+    return () => clearTimeout(autoSkipTimer);
   }, [user, loading]);
 
   const handleSkipAuth = () => {

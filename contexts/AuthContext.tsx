@@ -1,18 +1,16 @@
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import {
   User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
-  GoogleAuthProvider,
-  signInWithCredential
+  updateProfile
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../lib/firebase';
-import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
 import { GOOGLE_AUTH_CONFIG, getGoogleClientId, isGoogleAuthDevelopmentMode } from '../config/googleAuth';
+import { auth } from '../lib/firebase';
 
 // Configure WebBrowser for authentication
 WebBrowser.maybeCompleteAuthSession();
