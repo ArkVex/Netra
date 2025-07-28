@@ -35,7 +35,7 @@ export default function HomeScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
         <View>
-          <ThemedText type="title" style={[styles.title, { fontSize: 46, fontWeight: 'bold' }]}>Netra</ThemedText>
+          <ThemedText type="title" style={[styles.title, { fontSize: 46, fontWeight: 'bold' }]}>Drishti</ThemedText>
           <ThemedText style={[styles.subtitle, { fontSize: 18, fontWeight: 'bold' }]}>Eye Health Scanner</ThemedText>
         </View>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -56,7 +56,7 @@ export default function HomeScreen() {
       <View style={styles.actionSection}>
         <TouchableOpacity 
           style={styles.scanButton}
-          onPress={() => router.push('/scan_gemini')}
+          onPress={() => router.push('/scaning')}
         >
           <View style={styles.scanIcon}>
             <ThemedText style={styles.scanIconText}>👁️</ThemedText>

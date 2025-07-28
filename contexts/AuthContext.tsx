@@ -45,9 +45,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     let mounted = true;
     
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (mounted) {
-        setUser(user);
+        console.log('Auth state changed:', firebaseUser ? 'User logged in' : 'User logged out');
+        setUser(firebaseUser);
         setLoading(false);
       }
     }, (error) => {
@@ -57,26 +58,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
 
-    // Shorter timeout to prevent infinite loading
+    // Fallback timeout - but much longer to allow Firebase to restore session
     const timeout = setTimeout(() => {
-      if (mounted) {
+      if (mounted && loading) {
         console.log('Auth timeout reached, setting loading to false');
         setLoading(false);
       }
-    }, 3000); // 3 second timeout
+    }, 5000); // 5 second timeout
 
     return () => {
       mounted = false;
       unsubscribe();
       clearTimeout(timeout);
     };
-  }, []);
+  }, [loading]);
 
   const signIn = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      setLoading(true);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Sign in successful:', result.user.email);
+      // Don't need to manually set user - onAuthStateChanged will handle it
     } catch (error) {
+      console.error('Sign in error:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,7 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Running in production mode - using real Firebase Google OAuth');
         
         const redirectUri = AuthSession.makeRedirectUri({
-          scheme: 'netra',
+          scheme: 'Drishti',
           path: 'oauth'
         });
         

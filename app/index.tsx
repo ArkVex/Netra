@@ -37,7 +37,7 @@ export default function LandingScreen() {
       <View style={styles.loadingContainer}>
         <View style={styles.logoContainer}>
           <Ionicons name="eye" size={60} color="#3B82F6" />
-          <Text style={styles.logoText}>Netra</Text>
+          <Text style={styles.logoText}>Drishti</Text>
           <Text style={styles.tagline}>AI-Powered Eye Health</Text>
         </View>
         <ActivityIndicator size="large" color="#3B82F6" style={styles.loadingIndicator} />
@@ -56,7 +56,7 @@ export default function LandingScreen() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Ionicons name="eye" size={60} color="#3B82F6" />
-          <Text style={styles.logoText}>Netra</Text>
+          <Text style={styles.logoText}>Drishti</Text>
           <Text style={styles.tagline}>AI-Powered Eye Health</Text>
         </View>
 

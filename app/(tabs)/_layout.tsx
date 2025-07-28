@@ -27,23 +27,26 @@ export default function TabLayout() {
   }
 
   useEffect(() => {
-    // Only redirect if we're sure the user is not authenticated
-    // and we're not loading anymore
+    // Only redirect if we're absolutely sure the user is not authenticated
+    // and we've finished loading
     if (!loading && !user) {
-      // Add a small delay to prevent immediate redirect
+      console.log('No user found after loading, redirecting to login');
+      // Add a longer delay to ensure Firebase has fully checked for persisted auth
       const timer = setTimeout(() => {
         router.replace('/');
-      }, 1000);
+      }, 2000); // Increased to 2 seconds
       return () => clearTimeout(timer);
+    } else if (!loading && user) {
+      console.log('User authenticated:', user.email || user.displayName);
     }
   }, [user, loading]);
 
-  // Don't block the UI completely - allow access even during loading
-  // This helps prevent infinite loading states
+  // Show loading for a reasonable amount of time
   if (loading) {
     return (
       <View style={{ flex: 1, backgroundColor: '#0F0F23', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'white', fontSize: 16 }}>Loading tabs...</Text>
+        <Text style={{ color: 'white', fontSize: 16, marginBottom: 8 }}>Loading Drishti...</Text>
+        <Text style={{ color: '#666', fontSize: 14 }}>Checking authentication...</Text>
       </View>
     );
   }
